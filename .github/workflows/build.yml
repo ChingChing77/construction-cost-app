@@ -22,13 +22,16 @@ jobs:
           pip uninstall -y PySimpleGUI pysimplegui 2>$null || true
       
       - name: Build exe
-        run: pyinstaller main_onefile.spec
+        run: |
+          pyinstaller main_onefile.spec
+          echo "=== DIST DIR ==="
+          dir dist /s /b || echo "dist not found"
       
       - name: Upload exe
         uses: actions/upload-artifact@v4
         with:
           name: exe-output
-          path: dist/**/*
+          path: dist
       
       - name: Download exe
         uses: actions/download-artifact@v4
