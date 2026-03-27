@@ -22,18 +22,19 @@ jobs:
       
       - name: Build exe
         run: |
-          pyinstaller main_onefile.spec --log-level WARN
-          if (Test-Path dist/ConstructionCostApp.exe) {
-            Write-Host "[OK] Exe found: $(Get-Item dist/ConstructionCostApp.exe | Select-Object -ExpandProperty Length) bytes"
-          } else {
-            Write-Host "[ERROR] Exe not found in dist/"
-            Get-ChildItem dist/
-          }
-      
+          echo "Building..."
+          pyinstaller main_onefile.spec
+          echo "Build finished"
+          echo "Checking dist:"
+          Get-ChildItem dist/ -Recurse -File | Select-Object FullName, Length
+
       - name: Upload to Release
         uses: softprops/action-gh-release@v1
         if: github.event_name == 'workflow_dispatch'
         with:
           files: dist/ConstructionCostApp.exe
+          tag_name: v1.0.0
+          name: Construction Cost App v1.0.0
+          body: Windows standalone executable
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
