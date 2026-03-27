@@ -78,7 +78,7 @@ if os.path.exists(data_dir):
     datas.append((data_dir, "data"))
 
 a = Analysis(
-    ["entry_point.py"],
+    ["launcher.py"],
     pathex=[PROJECT_DIR],
     binaries=[],
     datas=datas,
@@ -110,7 +110,7 @@ exe = EXE(
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
-    upx=True,
+    upx=False,
     console=True,
     disable_windowed_traceback=True,
     argv_emulation=False,

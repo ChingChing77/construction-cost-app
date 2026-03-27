@@ -18,10 +18,12 @@ jobs:
         run: |
           pip install -r requirements.txt
           pip install pyinstaller
+          # 卸载可能导致问题的假 PySimpleGUI
+          pip uninstall -y PySimpleGUI pysimplegui 2>$null || true
       
       - name: Build exe
         run: |
-          pyinstaller --onefile --name "建筑工程造价成本分析集成软件" --console main.spec
+          pyinstaller --onefile --name "建筑工程造价成本分析集成软件" main.spec
       
       - name: Upload exe
         uses: actions/upload-artifact@v4
