@@ -94,7 +94,7 @@ exe = EXE(
     a.scripts,
     [],
     exclude_binaries=True,
-    name='建筑工程造价成本分析集成软件',
+    name='ConstructionCostApp',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
