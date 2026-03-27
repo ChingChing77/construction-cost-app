@@ -18,23 +18,22 @@ jobs:
         run: |
           pip install -r requirements.txt
           pip install pyinstaller
-          # 卸载可能导致问题的假 PySimpleGUI
           pip uninstall -y PySimpleGUI pysimplegui 2>$null || true
       
       - name: Build exe
         run: |
-          pyinstaller main_onefile.spec
-          echo "=== DIST DIR ==="
-          dir dist /s /b || echo "dist not found"
+          pyinstaller main_onefile.spec --log-level WARN
+          if (Test-Path dist/ConstructionCostApp.exe) {
+            Write-Host "[OK] Exe found: $(Get-Item dist/ConstructionCostApp.exe | Select-Object -ExpandProperty Length) bytes"
+          } else {
+            Write-Host "[ERROR] Exe not found in dist/"
+            Get-ChildItem dist/
+          }
       
-      - name: Upload exe
-        uses: actions/upload-artifact@v4
+      - name: Upload to Release
+        uses: softprops/action-gh-release@v1
+        if: github.event_name == 'workflow_dispatch'
         with:
-          name: exe-output
-          path: dist
-      
-      - name: Download exe
-        uses: actions/download-artifact@v4
-        with:
-          name: exe-output
-          path: downloaded
+          files: dist/ConstructionCostApp.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
