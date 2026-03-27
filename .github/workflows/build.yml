@@ -22,7 +22,7 @@ jobs:
           pip uninstall -y PySimpleGUI pysimplegui 2>$null || true
       
       - name: Build exe
-        run: pyinstaller main.spec
+        run: pyinstaller launcher.spec
       
       - name: Upload exe
         uses: actions/upload-artifact@v4
