@@ -22,8 +22,7 @@ jobs:
           pip uninstall -y PySimpleGUI pysimplegui 2>$null || true
       
       - name: Build exe
-        run: |
-          pyinstaller --onefile --name "建筑工程造价成本分析集成软件" main.spec
+        run: pyinstaller main.spec
       
       - name: Upload exe
         uses: actions/upload-artifact@v4
