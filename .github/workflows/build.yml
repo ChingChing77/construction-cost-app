@@ -25,14 +25,29 @@ jobs:
           echo "Building..."
           pyinstaller main_onefile.spec
           echo "Build finished"
-          # 复制 exe 到 dist/
+          # 确保 dist 存在并复制 exe
           New-Item -ItemType Directory -Force -Path dist | Out-Null
-          Copy-Item "build/main_onefile/ConstructionCostApp.exe" "dist/ConstructionCostApp.exe" -Force
-          Write-Host "Exe size:"
-          Get-Item "dist/ConstructionCostApp.exe" | Select-Object Length
+          Copy-Item "build\main_onefile\ConstructionCostApp.exe" "dist\ConstructionCostApp.exe" -Force -ErrorAction Stop
+          Write-Host "Build step: Copy succeeded"
+        continue-on-error: true
 
       - name: Upload to Release
         run: |
-          gh release upload v1.0.0 "dist/ConstructionCostApp.exe" --clobber
+          echo "Upload step: Checking dist contents..."
+          Get-ChildItem -Path . -Recurse -Filter "*.exe" | Select-Object FullName, Length
+          if (Test-Path "dist\ConstructionCostApp.exe") {
+            $size = (Get-Item "dist\ConstructionCostApp.exe").Length
+            Write-Host "Found exe, size: $size bytes"
+            gh release upload v1.0.0 "dist\ConstructionCostApp.exe" --clobber
+          } else {
+            Write-Host "ERROR: dist\ConstructionCostApp.exe not found"
+            Write-Host "Current dir:"
+            Get-Location
+            Write-Host "Dist contents:"
+            if (Test-Path "dist") { Get-ChildItem "dist" } else { Write-Host "dist does not exist" }
+            Write-Host "Build contents:"
+            if (Test-Path "build") { Get-ChildItem "build" -Recurse -File | Select-Object FullName } else { Write-Host "build does not exist" }
+            exit 1
+          }
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
