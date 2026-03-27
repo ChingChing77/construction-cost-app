@@ -36,3 +36,5 @@ jobs:
         run: |
           Write-Host "Uploading exe to release..."
           gh release upload v1.0.0 "dist\ConstructionCostApp.exe" --clobber
+        env:
+          GH_TOKEN: ${{ github.token }}
