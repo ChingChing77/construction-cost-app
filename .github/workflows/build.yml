@@ -8,18 +8,18 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      
+
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
           pip install pyinstaller
           pip uninstall -y PySimpleGUI pysimplegui 2>$null || true
-      
+
       - name: Build exe
         run: |
           echo "Building..."
@@ -33,10 +33,6 @@ jobs:
 
       - name: Upload to Release
         run: |
-          # 使用 PowerShell 获取 exe 完整路径并上传
-          $exePath = Get-ChildItem -Path . -Recurse -Filter "ConstructionCostApp.exe" | Select-Object -First 1 -ExpandProperty FullName
-          Write-Host "Found exe: $exePath"
-          # 使用 GitHub CLI 上传
-          gh release upload v1.0.0 "$exePath" --clobber
+          gh release upload v1.0.0 "dist/ConstructionCostApp.exe" --clobber
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
