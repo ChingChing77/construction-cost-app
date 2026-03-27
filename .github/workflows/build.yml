@@ -22,7 +22,10 @@ jobs:
           pip uninstall -y PySimpleGUI pysimplegui 2>$null || true
       
       - name: Build exe
-        run: pyinstaller launcher.spec
+        run: |
+          pyinstaller main.spec
+          # 打包为 zip（onedir模式）
+          powershell -Command "Compress-Archive -Path 'dist\*' -DestinationPath 'dist\建筑工程造价成本分析集成软件.zip' -Force"
       
       - name: Upload exe
         uses: actions/upload-artifact@v4
