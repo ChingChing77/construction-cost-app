@@ -29,12 +29,11 @@ jobs:
           Get-ChildItem dist/ -Recurse -File | Select-Object FullName, Length
 
       - name: Upload to Release
-        uses: softprops/action-gh-release@v1
-        if: github.event_name == 'workflow_dispatch'
-        with:
-          files: dist/ConstructionCostApp.exe
-          tag_name: v1.0.0
-          name: Construction Cost App v1.0.0
-          body: Windows standalone executable
+        run: |
+          # 使用 PowerShell 获取 exe 完整路径并上传
+          $exePath = Get-ChildItem -Path . -Recurse -Filter "ConstructionCostApp.exe" | Select-Object -First 1 -ExpandProperty FullName
+          Write-Host "Found exe: $exePath"
+          # 使用 GitHub CLI 上传
+          gh release upload v1.0.0 "$exePath" --clobber
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
